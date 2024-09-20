@@ -1,0 +1,356 @@
+1.	Знайти користувачів у яких в імені є послідовність букв qw
+
+db.UserProfile.find ({ 
+	name: { $regex: /qw/, $options: 'i' } 
+});
+
+2.	Знайти користувачів у яких country дорівнює Ukraine
+   
+   db.UserProfile.find({ country: "Ukraine" });
+
+3.	Знайти користувачів у яких в профайлі поле country не має значення
+
+db.UserProfile.find({ country: "" });
+
+
+4.	Знайти користувачів у яких в профайлі поле name не починається з літери a обовязково використовувати $where
+
+db.UserProfile.find({ 
+	$where: "this.name.toLowerCase().charAt(0) !== 'a'" 
+});
+
+5.	Робота з $lookup
+
+db.Users.aggregate([
+  {
+    $lookup: {
+      from: "UserProfile",
+      localField: "_id",            
+      foreignField: "userId",       
+      as: "profile"                 
+    }
+  }
+]);
+
+6.	Додайте колекцію car, так як це описано в схемі.
+
+db.runCommand({
+  collMod: "Cars",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["carBrandId", "carModelId", "userId", "mileage", "carCreatedAt"],  
+
+      properties: {
+        carBrandId: {
+          bsonType: "objectId",
+          description: "Required, carBrandId"
+        },
+        carModelId: {
+          bsonType: "objectId",
+          description: "Required carModelId"
+        },
+        userId: {
+          bsonType: "objectId",
+          description: "Required userId"
+        },
+        mileage: {
+          bsonType: "int",
+          description: "Required mileage"
+        },
+
+        initialMileage: {
+          bsonType: "int",
+          description: "Not required initialMileage"
+        },
+        updateMileageAt: {
+          bsonType: "date",
+          description: "Not required data the last mileage update"
+        },
+        createdAt: {
+          bsonType: "date",
+          description: "Not required date of record creation"
+        },
+        updatedAt: {
+          bsonType: "date",
+          description: "Not required date of record update"
+        },
+        carCreatedAt: {
+          bsonType: "date",
+          description: "Required date of car creation"
+        }
+      }
+    }
+  },
+  validationLevel: "strict",  
+  validationAction: "error" 
+});
+
+7.	Додайте 10 автівок.
+
+db.CarBrands.insertMany([
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),
+    "title": "BMW",
+    "logoFilename": "bmw_logo.png",
+    "createdAt": new Date("2024-09-01T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-10T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cb"),
+    "title": "Audi",
+    "logoFilename": "audi_logo.png",
+    "createdAt": new Date("2024-09-02T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-11T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cc"),
+    "title": "Toyota",
+    "logoFilename": "toyota_logo.png",
+    "createdAt": new Date("2024-09-03T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-12T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cd"),
+    "title": "Ford",
+    "logoFilename": "ford_logo.png",
+    "createdAt": new Date("2024-09-04T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-13T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ce"),
+    "title": "Mercedes",
+    "logoFilename": "mercedes_logo.png",
+    "createdAt": new Date("2024-09-05T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-14T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cf"),
+    "title": "Honda",
+    "logoFilename": "honda_logo.png",
+    "createdAt": new Date("2024-09-06T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-15T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d0"),
+    "title": "Chevrolet",
+    "logoFilename": "chevrolet_logo.png",
+    "createdAt": new Date("2024-09-07T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-16T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d1"),
+    "title": "Nissan",
+    "logoFilename": "nissan_logo.png",
+    "createdAt": new Date("2024-09-08T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-17T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d2"),
+    "title": "Subaru",
+    "logoFilename": "subaru_logo.png",
+    "createdAt": new Date("2024-09-09T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-18T10:00:00Z")   
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d3"),
+    "title": "Volkswagen",
+    "logoFilename": "volkswagen_logo.png",
+    "createdAt": new Date("2024-09-10T10:00:00Z"),  
+    "updatedAt": new Date("2024-09-19T10:00:00Z")   
+  }
+]);
+
+db.Cars.insertMany([
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d1"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bb"),  
+    "mileage": 25000,
+    "initialMileage": 10000,
+    "updateMileageAt": new Date("2024-01-01"),
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2022-01-01")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d2"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bc"),  
+    "mileage": 30000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2022-06-15")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d3"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bd"),  
+    "mileage": 12000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2023-03-01")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cb"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d4"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bb"),  
+    "mileage": 40000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2021-11-20")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cb"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d5"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bc"),  
+    "mileage": 15000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2023-07-30")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cb"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d6"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bd"),  
+    "mileage": 18000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2024-02-14")
+  },
+  // Adding additional cars for a total of 10
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d7"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bb"),  
+    "mileage": 22000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2022-12-10")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d8"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bc"),  
+    "mileage": 28000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2023-05-22")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cb"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8d9"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bd"),  
+    "mileage": 35000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2021-08-18")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8cb"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8da"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bc"),  
+    "mileage": 23000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2022-09-09")
+  },
+  {
+    "carBrandId": ObjectId("64c1f7a3e4b0d3c2f8e4d8ca"),  
+    "carModelId": ObjectId("64c1f7a3e4b0d3c2f8e4d8db"),  
+    "userId": ObjectId("64c1f7a3e4b0d3c2f8e4d8bd"),  
+    "mileage": 17000,
+    "createdAt": new Date(),
+    "updatedAt": new Date(),
+    "carCreatedAt": new Date("2024-05-30")
+  }
+]);
+
+
+
+
+8.	Напишіть запит який буде повертати інформацію по машинам та їх власників у яких mileage буде більше або дорівнювати 100 и модель атомобіля ауді
+
+db.Cars.aggregate([
+  // Stage 1: Lookup car brands
+  {
+    $lookup: {
+      from: "CarBrands",         // Collection to join with
+      localField: "carBrandId",   // Field in Cars
+      foreignField: "carBrandId", // Field in CarBrands
+      as: "carBrandDetails"       // Name of the new array field
+    }
+  },
+  {
+    $unwind: "$carBrandDetails"    
+  },
+  // Stage 2: Match documents with mileage >= 100 and car model is Audi
+  {
+    $match: {
+      mileage: { $gte: 100 },                
+      "carBrandDetails.title": "Audi"        
+    }
+  },
+  // Stage 3: Lookup user profiles
+  {
+    $lookup: {
+      from: "UserProfile",       
+      localField: "userId",       // Field in Cars
+      foreignField: "userId",     // Field in UserProfile
+      as: "ownerProfile"         // Name of the new array field
+    }
+  },
+  {
+    $unwind: "$ownerProfile"     
+  },
+  // Stage 4: The necessary fields
+  {
+    $project: {
+      _id: 1,
+      carBrandId: 1,
+      mileage: 1,
+      "carBrandDetails.title": 1,
+      "ownerProfile.name": 1,
+      "ownerProfile.lastname": 1,
+      "ownerProfile.country": 1
+    }
+  }
+]).pretty();
+
+9.	Знайти cars у яких бранд BMW або Audi
+
+db.Cars.aggregate([
+  {
+    $lookup: {
+      from: "CarBrands",
+      localField: "carBrandId",
+      foreignField: "carBrandId",
+      as: "brandDetails"
+    }
+  },
+  {
+    $unwind: "$brandDetails"
+  },
+  {
+    $match: {
+      "brandDetails.title": { $in: ["BMW", "Audi"] }
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      carBrandId: 1,
+      carModelId: 1,
+      userId: 1,
+      mileage: 1,
+      initialMileage: 1,
+      updateMileageAt: 1,
+      createdAt: 1,
+      updatedAt: 1,
+      carCreatedAt: 1,
+      brand: "$brandDetails.title"
+    }
+  }
+]);
+
+
